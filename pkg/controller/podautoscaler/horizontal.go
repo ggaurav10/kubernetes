@@ -23,7 +23,7 @@ import (
 
 	autoscalingv1 "k8s.io/api/autoscaling/v1"
 	autoscalingv2 "k8s.io/api/autoscaling/v2beta2"
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	apiequality "k8s.io/apimachinery/pkg/api/equality"
 	"k8s.io/apimachinery/pkg/api/errors"
 	apimeta "k8s.io/apimachinery/pkg/api/meta"
@@ -606,7 +606,18 @@ func (a *HorizontalController) reconcileAutoscaler(hpav1Shared *autoscalingv1.Ho
 		}
 		desiredReplicas = a.normalizeDesiredReplicas(hpa, key, currentReplicas, desiredReplicas)
 		rescale = desiredReplicas != currentReplicas
+
+		annotations := hpa.GetAnnotations()
+		if val, ok := annotations["mode"]; ok {
+			klog.V(4).Infof("Rescale? %v, HPA mode %v", rescale, val)
+			fmt.Println("Rescale, HPA mode: ", rescale, val)
+			if val == "Off" {
+				rescale = false
+			}
+		}
 	}
+
+	fmt.Println("Scaling mode 2: ", rescale)
 
 	if rescale {
 		scale.Spec.Replicas = desiredReplicas
@@ -626,7 +637,7 @@ func (a *HorizontalController) reconcileAutoscaler(hpav1Shared *autoscalingv1.Ho
 			hpa.Name, currentReplicas, desiredReplicas, rescaleReason)
 	} else {
 		klog.V(4).Infof("decided not to scale %s to %v (last scale time was %s)", reference, desiredReplicas, hpa.Status.LastScaleTime)
-		desiredReplicas = currentReplicas
+		//desiredReplicas = currentReplicas
 	}
 
 	a.setStatus(hpa, currentReplicas, desiredReplicas, metricStatuses, rescale)

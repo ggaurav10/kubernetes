@@ -17,7 +17,7 @@
 # Usage:
 #   [ARCH=amd64] [REGISTRY="staging-k8s.gcr.io"] make (build|push) VERSION={some_released_version_of_kubernetes}
 
-REGISTRY?=staging-k8s.gcr.io
+REGISTRY?=ggaurav10
 ARCH?=amd64
 OUT_DIR?=_output
 HYPERKUBE_BIN?=$(shell pwd)/../../../$(OUT_DIR)/dockerized/bin/linux/$(ARCH)/hyperkube

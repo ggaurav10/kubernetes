@@ -17,11 +17,11 @@
 # Usage:
 #   [ARCH=amd64] [REGISTRY="staging-k8s.gcr.io"] make (build|push)
 
-REGISTRY?=staging-k8s.gcr.io
+REGISTRY?=ggaurav10
 IMAGE?=$(REGISTRY)/debian-hyperkube-base
-TAG=0.12.1
+TAG=dev
 ARCH?=amd64
-ALL_ARCH = amd64 arm arm64 ppc64le s390x
+ALL_ARCH = amd64
 CACHEBUST?=1
 
 BASEIMAGE=k8s.gcr.io/debian-base-$(ARCH):0.4.1
